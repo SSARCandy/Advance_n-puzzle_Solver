@@ -19,4 +19,9 @@
       <Filter>原始程式檔</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="puzzle.h">
+      <Filter>原始程式檔</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

@@ -66,6 +66,9 @@
   <ItemGroup>
     <ClCompile Include="advance_8-puzzle.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="puzzle.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
