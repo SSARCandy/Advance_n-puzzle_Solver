@@ -9,6 +9,13 @@ int main(){
 	puzzle p(SS,GS);
 
 	p.printCurrentState();
+
+	//while (!p.goalTest()){
+	for (int i = 0; i < 10; i++){
+		p.AstarSolverOneStep();
+		if (p.goalTest())
+			break;
+	}
 	p.printGoalState();
 
 	cin >> SS;
