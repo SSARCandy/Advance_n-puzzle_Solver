@@ -114,6 +114,7 @@ public:
 		int h = findIndexOf(0, curState) / width;
 		int stacktop = 0;
 		int choosenChildNodeIndex = -1;
+		int choosenAction = 0;
 		int minMD_score = -1;
 //		cout << "0's (w, h) = (" << w << ", " << h << ')' << endl;
 
@@ -124,11 +125,30 @@ public:
 				if (minMD_score == -1){
 					minMD_score = ManhattenDistance(childNodeStack[stacktop]);
 					choosenChildNodeIndex = stacktop;
+					choosenAction = action;
 				}
 				else{
 					if (ManhattenDistance(childNodeStack[stacktop]) < minMD_score){
 						minMD_score = ManhattenDistance(childNodeStack[stacktop]);
 						choosenChildNodeIndex = stacktop;
+						choosenAction = action;
+					}
+					if (ManhattenDistance(childNodeStack[stacktop]) == minMD_score)
+					{
+						int choosenMD_one , newMD_one;
+						if (choosenAction == 1) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h - 1, w);
+						if (choosenAction == 2) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h + 1, w);
+						if (choosenAction == 3) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h, w - 1);
+						if (choosenAction == 4) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h, w + 1);
+						if (action == 1) newMD_one = MD_one_instence(childNodeStack[stacktop], h - 1, w);
+						if (action == 2) newMD_one = MD_one_instence(childNodeStack[stacktop], h + 1, w);
+						if (action == 3) newMD_one = MD_one_instence(childNodeStack[stacktop], h, w - 1);
+						if (action == 4) newMD_one = MD_one_instence(childNodeStack[stacktop], h, w + 1);
+						if (newMD_one < choosenMD_one){
+							minMD_score = ManhattenDistance(childNodeStack[stacktop]);
+							choosenChildNodeIndex = stacktop;
+							choosenAction = action;
+						}
 					}
 				}
 				stacktop++;
