@@ -10,8 +10,8 @@ int main(){
 
 	p.printCurrentState();
 
-	//while (!p.goalTest()){
-	for (int i = 0; i < 30; i++){
+	while (!p.goalTest()){
+//	for (int i = 0; i < 30; i++){
 		p.AstarSolverOneStep();
 		if (p.goalTest())
 			break;

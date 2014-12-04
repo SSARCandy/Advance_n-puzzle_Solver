@@ -9,6 +9,7 @@ class puzzle{
 public:
 	puzzle(string start, string goal)
 	{
+		spaces = 0;
 		initPuzzle(start);
 		setGoalState(goal);
 	}
@@ -37,6 +38,11 @@ public:
 				startState[i][j] = curState[i][j];
 			}
 		}
+		//count spaces
+		for (int i = 0; i < height; i++)
+			for (int j = 0; j < width; j++)
+				if (startState[i][j] == 0)
+					spaces++;
 	}
 
 	void setGoalState(string goal)
@@ -110,60 +116,76 @@ public:
 	}
 
 	void AstarSolverOneStep(){
-		int w = findIndexOf(0, curState) % width;
-		int h = findIndexOf(0, curState) / width;
-		int stacktop = 0;
 		int choosenChildNodeIndex = -1;
+		int stacktop = 0;
 		int choosenAction = 0;
 		int minMD_score = -1;
-//		cout << "0's (w, h) = (" << w << ", " << h << ')' << endl;
+		for (int space_counter = 0; space_counter < spaces; space_counter++){
+			int w = findIndexOf(0, curState, space_counter) % width;
+			int h = findIndexOf(0, curState, space_counter) / width;
+			//		cout << "0's (w, h) = (" << w << ", " << h << ')' << endl;
 
-		// try u, d, l, r and compute score
-		for (int action = 1; action <= 4; action++){
-			copyState(childNodeStack[stacktop], curState);
-			if (swap(childNodeStack[stacktop], w, h, action)){
-				if (minMD_score == -1){
-					minMD_score = ManhattenDistance(childNodeStack[stacktop]);
-					choosenChildNodeIndex = stacktop;
-					choosenAction = action;
-				}
-				else{
-					if (ManhattenDistance(childNodeStack[stacktop]) < minMD_score){
+			// try u, d, l, r and compute score
+			for (int action = 1; action <= 4; action++){
+				copyState(childNodeStack[stacktop], curState);
+				if (swap(childNodeStack[stacktop], w, h, action)){
+					if (minMD_score == -1){
 						minMD_score = ManhattenDistance(childNodeStack[stacktop]);
 						choosenChildNodeIndex = stacktop;
 						choosenAction = action;
 					}
-					if (ManhattenDistance(childNodeStack[stacktop]) == minMD_score)
-					{
-						int choosenMD_one , newMD_one;
-						if (choosenAction == 1) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h - 1, w);
-						if (choosenAction == 2) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h + 1, w);
-						if (choosenAction == 3) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h, w - 1);
-						if (choosenAction == 4) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h, w + 1);
-						if (action == 1) newMD_one = MD_one_instence(childNodeStack[stacktop], h - 1, w);
-						if (action == 2) newMD_one = MD_one_instence(childNodeStack[stacktop], h + 1, w);
-						if (action == 3) newMD_one = MD_one_instence(childNodeStack[stacktop], h, w - 1);
-						if (action == 4) newMD_one = MD_one_instence(childNodeStack[stacktop], h, w + 1);
-						if (newMD_one < choosenMD_one){
+					else{
+						if (ManhattenDistance(childNodeStack[stacktop]) == minMD_score){
+							if (rand() % 2){
+								minMD_score = ManhattenDistance(childNodeStack[stacktop]);
+								choosenChildNodeIndex = stacktop;
+								choosenAction = action;
+							}
+
+							//int choosenMD_one, newMD_one;
+							//if (choosenAction == 1) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h - 1, w);
+							//if (choosenAction == 2) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h + 1, w);
+							//if (choosenAction == 3) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h, w - 1);
+							//if (choosenAction == 4) choosenMD_one = MD_one_instence(childNodeStack[stacktop], h, w + 1);
+							//if (action == 1) newMD_one = MD_one_instence(childNodeStack[stacktop], h - 1, w);
+							//if (action == 2) newMD_one = MD_one_instence(childNodeStack[stacktop], h + 1, w);
+							//if (action == 3) newMD_one = MD_one_instence(childNodeStack[stacktop], h, w - 1);
+							//if (action == 4) newMD_one = MD_one_instence(childNodeStack[stacktop], h, w + 1);
+							//if (newMD_one < choosenMD_one){
+							//	minMD_score = ManhattenDistance(childNodeStack[stacktop]);
+							//	choosenChildNodeIndex = stacktop;
+							//	choosenAction = action;
+							//}
+						}
+						if (ManhattenDistance(childNodeStack[stacktop]) < minMD_score){
 							minMD_score = ManhattenDistance(childNodeStack[stacktop]);
 							choosenChildNodeIndex = stacktop;
 							choosenAction = action;
 						}
+
 					}
+					stacktop++;
 				}
-				stacktop++;
 			}
 		}
+		//no any good child node, all of them makes distance higher
+		if (choosenChildNodeIndex == 0 && ManhattenDistance(childNodeStack[choosenChildNodeIndex]) > ManhattenDistance(curState)){
+			choosenChildNodeIndex = rand()%stacktop;
+		}
+		//cout << "**********" << " cC: " << choosenChildNodeIndex<<" cA: "<<choosenAction << endl;
 		copyState(curState, childNodeStack[choosenChildNodeIndex]);
 		printCurrentState();
 	}
 
 	//return one int = i + j*width
-	int findIndexOf(int target, int arr[][15]){
+	int findIndexOf(int target, int arr[][15], int position){
+		int p = 0;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
-				if (target == arr[i][j]){
-					return i*width + j;
+				if (target == arr[i][j] ){
+					if (p == position)
+						return i*width + j;
+					p++;
 				}
 			}
 		}
@@ -205,7 +227,7 @@ public:
 			}
 			break;
 		case 3://LEFT
-			if (w - 1 >= 0 && arr[h][w-1] != -1 && arr[h][w-1] != -1){
+			if (w - 1 >= 0 && arr[h][w-1] != -1 && arr[h][w-1] != 0){
 				int tmp = arr[h][w- 1];
 				arr[h][w-1] = arr[h][w];
 				arr[h][w] = tmp;
@@ -216,7 +238,7 @@ public:
 			}
 			break;
 		case 4://RIGHT
-			if (w + 1 >= 0 && arr[h][w + 1] != -1 && arr[h][w + 1] != -1){
+			if (w + 1 >= 0 && arr[h][w + 1] != -1 && arr[h][w + 1] != 0){
 				int tmp = arr[h][w + 1];
 				arr[h][w + 1] = arr[h][w];
 				arr[h][w] = tmp;
@@ -262,4 +284,5 @@ private:
 	int childNodeStack[15][15][15];
 	int width;
 	int height;
+	int spaces;
 };
