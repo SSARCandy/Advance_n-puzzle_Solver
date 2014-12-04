@@ -76,23 +76,20 @@ public:
 			return false;
 	}
 	
-	int MD_one_instence(int nodeArray[][15], int w, int h){
-		// not block or space
-		if (nodeArray[h][w] != 0 && nodeArray[h][w] != -1){
-			//find the min distance to goal state
-			int GoalState_h = 0, GoalState_w = 0;
-			while (true){
-				if (nodeArray[h][w] == goalState[GoalState_h][GoalState_w]){
-					return abs(h - GoalState_h) + abs(w - GoalState_w);
+	int MD_one_instence(int nodeArray[][15], int h, int w){
+		//find the min distance to goal state
+		int GoalState_h = 0, GoalState_w = 0;
+		while (true){
+			if (nodeArray[h][w] == goalState[GoalState_h][GoalState_w]){
+				return abs(h - GoalState_h) + abs(w - GoalState_w);
+			}
+			else{
+				if (GoalState_w < width){
+					GoalState_w++;
 				}
 				else{
-					if (GoalState_w < width){
-						GoalState_w++;
-					}
-					else{
-						GoalState_h++;
-						GoalState_w = 0;
-					}
+					GoalState_h++;
+					GoalState_w = 0;
 				}
 			}
 		}
@@ -103,27 +100,10 @@ public:
 		int score = 0;
 		for (int CurState_h = 0; CurState_h < height; CurState_h++){
 			for (int CurState_w = 0; CurState_w < width; CurState_w++){
-				score += MD_one_instence(nodeArray, CurState_w, CurState_w);
 				// not block or space
-				//if (nodeArray[CurState_h][CurState_w] != 0 && nodeArray[CurState_h][CurState_w] != -1){
-				//	//find the min distance to goal state
-				//	int GoalState_h = 0, GoalState_w = 0;
-				//	while (true){
-				//		if (nodeArray[CurState_h][CurState_w] == goalState[GoalState_h][GoalState_w]){
-				//			score += abs(CurState_h - GoalState_h) + abs(CurState_w - GoalState_w);
-				//			break;
-				//		}
-				//		else{
-				//			if (GoalState_w < width){
-				//				GoalState_w++;
-				//			}
-				//			else{
-				//				GoalState_h ++ ;
-				//				GoalState_w = 0;
-				//			}
-				//		}
-				//	}
-				//}
+				if (nodeArray[CurState_h][CurState_w] != 0 && nodeArray[CurState_h][CurState_w] != -1){
+					score += MD_one_instence(nodeArray, CurState_h, CurState_w);
+				}
 			}
 		}
 		return score;
@@ -155,10 +135,7 @@ public:
 			}
 		}
 		copyState(curState, childNodeStack[choosenChildNodeIndex]);
-
-//		;
 		printCurrentState();
-
 	}
 
 	//return one int = i + j*width
