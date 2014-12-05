@@ -3,6 +3,9 @@
 #include <cstdlib>
 #include <string>
 #include <math.h>
+
+#define MAX_HEIGHT_AND_WIDTH 15
+#define MAX_CHILD_STACK 20
 using namespace std;
 
 class puzzle{
@@ -82,7 +85,7 @@ public:
 			return false;
 	}
 	
-	int MD_one_instence(int nodeArray[][15], int h, int w){
+	int MD_one_instence(int nodeArray[][MAX_HEIGHT_AND_WIDTH], int h, int w){
 		//find the min distance to goal state
 		int GoalState_h = 0, GoalState_w = 0;
 		while (true){
@@ -102,7 +105,7 @@ public:
 	}
 
 	//Manhatten distance heuristic
-	int ManhattenDistance(int nodeArray[][15]){
+	int ManhattenDistance(int nodeArray[][MAX_HEIGHT_AND_WIDTH]){
 		int score = 0;
 		for (int CurState_h = 0; CurState_h < height; CurState_h++){
 			for (int CurState_w = 0; CurState_w < width; CurState_w++){
@@ -178,7 +181,7 @@ public:
 	}
 
 	//return one int = i + j*width
-	int findIndexOf(int target, int arr[][15], int position){
+	int findIndexOf(int target, int arr[][MAX_HEIGHT_AND_WIDTH], int position){
 		int p = 0;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
@@ -191,7 +194,7 @@ public:
 		}
 	}
 
-	void copyState(int dest[][15], int source[][15]){
+	void copyState(int dest[][MAX_HEIGHT_AND_WIDTH], int source[][MAX_HEIGHT_AND_WIDTH]){
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				dest[i][j] = source[i][j];
@@ -200,7 +203,7 @@ public:
 	}
 
 	// return true if the swap action is success.
-	bool swap(int arr[][15], int w, int h, int action){
+	bool swap(int arr[][MAX_HEIGHT_AND_WIDTH], int w, int h, int action){
 		//action: 1-up, 2-down, 3-left, 4-right
 		switch (action)
 		{
@@ -278,10 +281,10 @@ public:
 	}
 
 private:
-	int startState[15][15];
-	int goalState[15][15];
-	int curState[15][15];
-	int childNodeStack[15][15][15];
+	int startState[MAX_HEIGHT_AND_WIDTH][MAX_HEIGHT_AND_WIDTH];
+	int goalState[MAX_HEIGHT_AND_WIDTH][MAX_HEIGHT_AND_WIDTH];
+	int curState[MAX_HEIGHT_AND_WIDTH][MAX_HEIGHT_AND_WIDTH];
+	int childNodeStack[MAX_CHILD_STACK][MAX_HEIGHT_AND_WIDTH][MAX_HEIGHT_AND_WIDTH];
 	int width;
 	int height;
 	int spaces;
