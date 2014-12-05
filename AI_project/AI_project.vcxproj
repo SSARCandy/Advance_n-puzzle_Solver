@@ -68,6 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="puzzle.h" />
+    <ClInclude Include="puzzle_optimal.h" />
+    <ClInclude Include="Tiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

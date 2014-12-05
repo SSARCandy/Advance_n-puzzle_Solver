@@ -81,8 +81,7 @@ public:
 	{
 		if (ManhattenDistance(curState) == 0)
 			return true;
-		else
-			return false;
+		return false;
 	}
 	
 	int MD_one_instence(int nodeArray[][MAX_HEIGHT_AND_WIDTH], int h, int w){
