@@ -5,19 +5,29 @@
 int main(){
 	string SS, GS;
 	cin >> SS >> GS;
-	int o;
-	puzzle p(SS,GS);
+	int steps = 0;
+	puzzleSolver p(SS,GS);
+	puzzle ans;
 
-	p.printCurrentState();
+//	p.printCurrentState();
 
-//	while (!p.goalTest()){
-	for (int i = 0; i < 30; i++){
-		p.AstarSolverOneStep();
+	//while (!p.goalTest()){
+	//for (int i = 0; i < 10; i++){
+	//	p.AstarSolverOneStep();
 //		cin >> o;
-		if (p.goalTest())
-			break;
+	//	if (p.goalTest())
+	//		break;
+	//	steps++;
+	//}
+	//p.printGoalState();
+	//cout << "Total Steps = " << steps << endl;
+
+	ans = p.graph_search();
+
+	for (int i = 0; i < ans.actCount; i++){
+		cout << ans.action[i];
 	}
-	p.printGoalState();
+	cout << ans.actCount << endl;
 
 	cin >> SS;
 
