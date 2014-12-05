@@ -208,44 +208,52 @@ public:
 		switch (action)
 		{
 		case 1://UP
-			if (h - 1 >= 0 && arr[h - 1][w] != -1 && arr[h - 1][w] != 0){
-				int tmp = arr[h - 1][w];
-				arr[h - 1][w] = arr[h][w];
-				arr[h][w] = tmp;
-				return true;
+			if (h - 1 >= 0){
+				if (arr[h - 1][w] != -1 && arr[h - 1][w] != 0){
+					int tmp = arr[h - 1][w];
+					arr[h - 1][w] = arr[h][w];
+					arr[h][w] = tmp;
+					return true;
+				}
 			}
 			else{
 				return false;
 			}
 			break;
 		case 2://DOWN
-			if (h + 1 < height&& arr[h + 1][w] != -1 && arr[h + 1][w] != 0){
-				int tmp = arr[h + 1][w];
-				arr[h + 1][w] = arr[h][w];
-				arr[h][w] = tmp;
-				return true;
+			if (h + 1 < height){
+				if (arr[h + 1][w] != -1 && arr[h + 1][w] != 0){
+					int tmp = arr[h + 1][w];
+					arr[h + 1][w] = arr[h][w];
+					arr[h][w] = tmp;
+					return true;
+				}
 			}
 			else{
 				return false;
 			}
 			break;
 		case 3://LEFT
-			if (w - 1 >= 0 && arr[h][w-1] != -1 && arr[h][w-1] != 0){
-				int tmp = arr[h][w- 1];
-				arr[h][w-1] = arr[h][w];
-				arr[h][w] = tmp;
-				return true;
+			if (w - 1 >= 0){
+				if (arr[h][w - 1] != -1 && arr[h][w - 1] != 0){
+					int tmp = arr[h][w - 1];
+					arr[h][w - 1] = arr[h][w];
+					arr[h][w] = tmp;
+					return true;
+				}
 			}
 			else{
 				return false;
 			}
 			break;
 		case 4://RIGHT
-			if (w + 1 >= 0 && arr[h][w + 1] != -1 && arr[h][w + 1] != 0){
-				int tmp = arr[h][w + 1];
-				arr[h][w + 1] = arr[h][w];
-				arr[h][w] = tmp;
-				return true;
+			if (w + 1 >= 0){
+				if (arr[h][w + 1] != -1 && arr[h][w + 1] != 0){
+					int tmp = arr[h][w + 1];
+					arr[h][w + 1] = arr[h][w];
+					arr[h][w] = tmp;
+					return true;
+				}
 			}
 			else{
 				return false;
@@ -257,7 +265,7 @@ public:
 	}
 
 	void printCurrentState(){
-//		cout << "width: " << width << "  height: " << height << endl;
+		//cout << "width: " << width << "  height: " << height << endl;
 		cout << "|---------Current State----------|" << " MD: " << ManhattenDistance(curState) << endl;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
