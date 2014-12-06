@@ -44,9 +44,9 @@ public:
 		copy(tile);
 	}
 
-	int at(int x, int y){ /*if (x>height || y>width) return; */return tiles.at(width*x + y); }
+	int& at(int x, int y){ /*if (x>height || y>width) return; */return tiles.at(width*x + y); }
 
-	void copy(Tiles& tile)
+	void copy(const Tiles& tile)
 	{
 		tiles = tile.tiles;
 		width = tile.width;
@@ -77,6 +77,8 @@ public:
 		else
 			return -1;
 	}
+
+
 
 	int getWidth(){ return width; }
 	int getHeight(){ return height; }
