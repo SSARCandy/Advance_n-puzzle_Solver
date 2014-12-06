@@ -25,7 +25,7 @@ public:
 	{
 		initPuzzle(start);
 		setGoalState(goal);
-
+		
 		if (currentState.tile.getWidth() != goalState.tile.getWidth() ||
 			currentState.tile.getHeight() != goalState.tile.getHeight())
 			exit(EXIT_FAILURE);
