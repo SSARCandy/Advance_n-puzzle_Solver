@@ -9,25 +9,17 @@ int main(){
 	puzzleSolver p(SS,GS);
 	puzzle ans;
 
-//	p.printCurrentState();
-
-	//while (!p.goalTest()){
-	//for (int i = 0; i < 10; i++){
-	//	p.AstarSolverOneStep();
-//		cin >> o;
-	//	if (p.goalTest())
-	//		break;
-	//	steps++;
-	//}
-	//p.printGoalState();
-	//cout << "Total Steps = " << steps << endl;
-
 	ans = p.graph_search();
 
-	for (int i = 0; i < ans.actCount; i++){
-		cout << ans.action[i];
+	cout << "=============ANS==============" << endl;
+	if (ans.actCount == 0)
+		cout << "Failed" << endl;
+	else{
+		for (int i = 0; i < ans.actCount; i++)
+			cout << ans.action[i];
 	}
-	cout << ans.actCount << endl;
+	cout << "total steps: "<<ans.actCount << endl;
+	cout << "=============ANS==============" << endl;
 
 	cin >> SS;
 
