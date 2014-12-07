@@ -155,7 +155,7 @@ public:
 		frontier_length = 0;
 		initPuzzle(start);
 		setGoalState(goal);
-		curState.MDscore = ManhattenDistance(curState);
+		startState.MDscore = ManhattenDistance(startState);
 		goalState.MDscore = ManhattenDistance(goalState);
 	}
 
@@ -189,7 +189,7 @@ public:
 				if (tmpArray[i][j] == 0)
 					spaces++;
 
-		curState = puzzle(tmpArray, width, height);
+		startState = puzzle(tmpArray, width, height);
 	}
 
 	void setGoalState(string goal)
@@ -417,7 +417,7 @@ public:
 
 	puzzle graph_search(){
 		frontier_length = 1;
-		frontier[frontier_length-1] = curState;
+		frontier[frontier_length-1] = startState;
 		puzzle node;
 		puzzle explored[MAX_STACKS];
 		int exploredCount = 0;
@@ -429,8 +429,8 @@ public:
 				if (steps > MAX_SEARCH_DEPTH){
 					steps = 0;
 					frontier_length = 1;
-					frontier[frontier_length - 1] = curState;
-					removeFrontier(explored, exploredCount, curState);
+					frontier[frontier_length - 1] = startState;
+					removeFrontier(explored, exploredCount, startState);
 					exploredCount = tmp++;
 				}
 				node = frontier[0];
@@ -454,7 +454,7 @@ public:
 			}
 			else
 				return goalState;// failure
-			if (frontier_length > 40)frontier_length = 30;
+			if (frontier_length > 50) frontier_length = 40;
 
 			cout << "||||||||||||||||||||||||||||" << endl;
 			for (int i = frontier_length-1; i >=0; i--)
@@ -486,7 +486,7 @@ public:
 	}
 
 private:
-	puzzle curState, goalState;
+	puzzle startState, goalState;
 	puzzle frontier[MAX_STACKS];
 	int frontier_length;
 	int width;
