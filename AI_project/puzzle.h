@@ -466,9 +466,9 @@ public:
 			node.printCurrentState();
 
 		//	printGoalState();
-			string i;
-			if (steps % MAX_SEARCH_DEPTH == 0)
-			cin >> i;
+			//string i;
+			//if (steps % MAX_SEARCH_DEPTH == 0)
+			//cin >> i;
 		}
 	}
 
