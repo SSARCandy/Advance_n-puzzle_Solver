@@ -4,9 +4,9 @@
 #include <string>
 #include <math.h>
 
-#define MAX_HEIGHT_AND_WIDTH 10
-#define MAX_STACKS 70
-#define MAX_SEARCH_DEPTH 65
+#define MAX_HEIGHT_AND_WIDTH 5
+#define MAX_STACKS 110
+#define MAX_SEARCH_DEPTH 100
 using namespace std;
 
 class puzzle{
