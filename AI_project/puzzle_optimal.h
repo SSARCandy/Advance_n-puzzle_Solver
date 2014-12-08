@@ -12,7 +12,7 @@ struct State
 
 struct compareState
 {
-	bool operator() (const State& a, const State& b){ return (a.g + a.h) < (b.g + b.h); }
+	bool operator() (const State& a, const State& b){ return (a.g + a.h) > (b.g + b.h); }
 };
 
 class puzzle{
@@ -76,7 +76,40 @@ public:
 		state.h = score;
 		return score;
 	}
+	
+	void expandNode(State parent)
+	{
+		for (int counter = 0; counter < spaces; counter++)
+		{
+			int tmp = findIndex(0, counter, parent);
+			int x = tmp % width;
+			int y = tmp / width;
 
+			for (int dir = 0; dir < 4; dir++)
+			{
+				State child;
+				copyState(child, parent);
+
+				tileMove(child, y, x, dir);
+
+				heuristicEvaluation(child);
+				++child.g;
+
+				frontier.push(child);
+			}
+		}
+	}
+
+	void A_star()
+	{
+		while (!goalTest())
+		{
+			currentState = frontier.top();
+			frontier.pop();
+
+			expandNode(currentState);
+		}
+	}
 	//void AstarSolverOneStep(){
 	//	int choosenChildNodeIndex = -1;
 	//	int stacktop = 0;
@@ -153,6 +186,24 @@ public:
 	//	}
 	//}
 
+	//search the specific value, target, at the specific order.
+	//If target doesn't exist, return -1.
+	int findIndex(int target, int order, State state)
+	{
+		int counter = 0;
+		for (int i = 0; i < width*height; i++)
+		{
+			if (state.tile.at(i) == target)
+			{
+				if (counter == order)
+					return i;
+				counter++;
+			}
+		}
+		return -1;
+	}
+
+
 	//void copyState(int dest[][MAX_HEIGHT_AND_WIDTH], int source[][MAX_HEIGHT_AND_WIDTH]){
 	//	for (int i = 0; i < height; i++){
 	//		for (int j = 0; j < width; j++){
@@ -162,9 +213,12 @@ public:
 	//}
 
 	//return true if the action success.
-	//action: empty space 1-up, 2-down, 3-left, 4-right 
+	//action: move empty space 1-up, 2-down, 3-left, 4-right 
 	bool tileMove(State state, int y, int x, int direction)
 	{
+		if (state.tile.at(y, x) != 0)
+			return false;
+
 		switch (direction)
 		{
 			case 1://UP

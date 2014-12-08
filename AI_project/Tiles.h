@@ -46,6 +46,8 @@ public:
 
 	int& at(int x, int y){ /*if (x>height || y>width) return; */return tiles.at(width*x + y); }
 
+	int& at(int position){ return tiles.at(position); }
+
 	void copy(const Tiles& tile)
 	{
 		tiles = tile.tiles;
@@ -64,21 +66,19 @@ public:
 		}
 	}
 
-	//return the index of the target. If target doesn't exist, return -1.
-	int find(int target)
-	{
-		//use binary search
-		vector<int>::iterator begin = tiles.begin();
-		vector<int>::iterator end = tiles.end();
+	////return the index of the target. If target doesn't exist, return -1.
+	//int find(int target)
+	//{
+	//	//use binary search
+	//	vector<int>::iterator begin = tiles.begin();
+	//	vector<int>::iterator end = tiles.end();
 
-		vector<int>::iterator it = lower_bound(begin, end, target);
-		if (it != end && !(target < *it))
-			return it - tiles.begin();
-		else
-			return -1;
-	}
-
-
+	//	vector<int>::iterator it = lower_bound(begin, end, target);
+	//	if (it != end && !(target < *it))
+	//		return it - tiles.begin();
+	//	else
+	//		return -1;
+	//}
 
 	int getWidth(){ return width; }
 	int getHeight(){ return height; }
