@@ -3,10 +3,12 @@
 #include <cstdlib>
 #include <string>
 #include <math.h>
+#include <vector>
+ #include <Windows.h>
 
-#define MAX_HEIGHT_AND_WIDTH 5
-#define MAX_STACKS 110
-#define MAX_SEARCH_DEPTH 100
+#define MAX_HEIGHT_AND_WIDTH 10
+#define MAX_SEARCH_NODE 250
+#define MAX_STACKS 80
 using namespace std;
 
 class puzzle{
@@ -32,20 +34,32 @@ public:
 			action[i] = "";
 	}
 
+	puzzle &operator= (const puzzle & other){
+		MDscore = other.MDscore;
+		width = other.width;
+		height = other.height;
+		actCount = other.actCount;
+
+		for (int i = 0; i < height; i++)
+			for (int j = 0; j < width; j++)
+				state[i][j] = other.state[i][j];
+
+		for (int i = 0; i < other.actCount; i++)
+			action[i] = other.action[i];
+
+		return *this;
+	}	
+
 	puzzle &operator= (puzzle & other){
 		MDscore = other.MDscore;
 		width = other.width;
 		height = other.height;
 		actCount = other.actCount;
 
-		copyState(state, other.state); 
-		//cout << "A " << actCount << '=';
+		copyState(state, other.state);
 
-		for (int i = 0; i < other.actCount; i++){
-			//cout << i << ' ';
+		for (int i = 0; i < other.actCount; i++)
 			action[i] = other.action[i];
-		}
-		//cout << endl;
 
 		return *this;
 	}
@@ -122,6 +136,7 @@ public:
 			return false;
 			break;
 		default:
+			return false;
 			break;
 		}
 	}
@@ -139,20 +154,18 @@ public:
 
 	int MDscore;
 	int state[MAX_HEIGHT_AND_WIDTH][MAX_HEIGHT_AND_WIDTH];
-	string action[MAX_STACKS];
 	int actCount;
+	string action[MAX_STACKS];
 private:
 	int width;
 	int height;
-	//	int spaces;
-
 };
 
 class puzzleSolver{
 public:
 	puzzleSolver(string start, string goal){
 		spaces = 0;
-		frontier_length = 0;
+		//frontier_length = 0;
 		initPuzzle(start);
 		setGoalState(goal);
 		startState.MDscore = ManhattenDistance(startState);
@@ -233,6 +246,7 @@ public:
 	}
 
 	bool isSame(puzzle a, puzzle b){
+		if (a.MDscore != b.MDscore) return false;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				if (a.state[i][j] != b.state[i][j])
@@ -287,14 +301,7 @@ public:
 				}
 			}
 		}
-	}
-
-	void copyState(puzzle dest, puzzle source){
-		for (int i = 0; i < height; i++){
-			for (int j = 0; j < width; j++){
-				dest.state[i][j] = source.state[i][j];
-			}
-		}
+		return -1;
 	}
 
 	// return true if the swap action is success.
@@ -355,46 +362,50 @@ public:
 			return false;
 			break;
 		default:
+			return false;
 			break;
 		}
 	}
 
-	void expandNode(puzzle frontier[], int &frontier_length, puzzle explored[], int exploredCount, puzzle node){
+	void expandNode(vector<puzzle> &frontier,  puzzle node){
 		puzzle tmp_puzzle;
-		//cout << "xxxxxxxxxxxxxxxxxxxxxxx" << endl;
 		for (int space_counter = 0; space_counter < spaces; space_counter++){
 			int w = findIndexOf(0, node, space_counter) % width;
 			int h = findIndexOf(0, node, space_counter) / width;
-			//		cout << "0's (w, h) = (" << w << ", " << h << ')' << endl;
+
 			// try u, d, l, r and compute score
 			for (int action = 1; action <= 4; action++){
-				copyState(tmp_puzzle, node);
-				if (swap(tmp_puzzle, w, h, action)){
-					frontier_length++;
-					//cout << '1' << endl;
-					frontier[frontier_length - 1] = node;
-					//cout << '2' << endl;
-					frontier[frontier_length - 1].swap(w, h, action);
-					//cout << '3' << endl;
-					frontier[frontier_length - 1].MDscore = ManhattenDistance(frontier[frontier_length - 1]);
+				tmp_puzzle = node;
+				if (tmp_puzzle.swap(w, h, action)){
+					tmp_puzzle.MDscore = ManhattenDistance(tmp_puzzle);
+					InsertNode(frontier, tmp_puzzle);
 				}
 			}
 		}
-		//cout << "xxxxxxxxxxxxxxxxxxxxxxx" << endl;
 	}
 
-	void sortFrontier(puzzle frontier[], int frontier_length){
-		puzzle tmp;
-		for (int i = frontier_length - 1; i > 0; i--)	{
-			for (int j = 0; j <= i - 1; j++){
-				if (frontier[j].MDscore > frontier[j + 1].MDscore){
-					tmp = frontier[j];
-					frontier[j] = frontier[j + 1];
-					frontier[j + 1] = tmp;
-				}
+	void InsertNode(vector<puzzle> &f, puzzle &t){
+		for (unsigned i = 0; i < f.size(); i++){
+			if (t.MDscore <= f[i].MDscore){
+				f.insert(f.begin() + i,t);
+				break;
 			}
 		}
+		f.push_back(t);
 	}
+
+//	void sortFrontier(vector<puzzle> &frontier){
+	//	puzzle tmp;
+	//	for (int i = frontier.size() - 1; i > 0; i--)	{
+	//		for (int j = 0; j <= i - 1; j++){
+	//			if (frontier[j].MDscore > frontier[j + 1].MDscore){
+	//				tmp = frontier[j];
+	//				frontier[j] = frontier[j + 1];
+	//				frontier[j + 1] = tmp;
+	//			}
+	//		}
+	//	}
+	//}
 
 	void removeFirstFrontier(puzzle frontier[], int &frontier_length){
 		frontier_length--;
@@ -416,59 +427,68 @@ public:
 	}
 
 	puzzle graph_search(){
-		frontier_length = 1;
-		frontier[frontier_length-1] = startState;
 		puzzle node;
-		puzzle explored[MAX_STACKS];
-		int exploredCount = 0;
-		int tmp = 1;
-		int steps = 0;
+		vector<puzzle> explored;
+		int search_nodes = 0, tmp = 0;
+
+		frontier.clear();
+		frontier.push_back(startState);
+
 
 		while (true) {
-			if (frontier_length != 0) {
-				if (steps > MAX_SEARCH_DEPTH){
-					steps = 0;
-					frontier_length = 1;
-					frontier[frontier_length - 1] = startState;
-					removeFrontier(explored, exploredCount, startState);
-					exploredCount = tmp++;
+			if (frontier.size() != 0) {
+				if (search_nodes >= MAX_SEARCH_NODE){
+					search_nodes = 0;
+					frontier.clear();
+					frontier.push_back(startState);
+					explored.erase(explored.begin() + tmp++);
+				//	explored.erase(explored.begin() + tmp, explored.end());
 				}
 				node = frontier[0];
-				removeFirstFrontier(frontier, frontier_length);
+				frontier.erase(frontier.begin());
 
 				if (goalTest(node))
 					return node;
 				else {
 					bool had_explored = false;
-					for (int i = 0; i < exploredCount; i++){
-						if (isSame(explored[i], node))
+					for (unsigned i = 0; i < explored.size(); i++){
+						if (isSame(explored[i], node)){
 							had_explored = true;
+							break;
+						}
 					}
 					if (!had_explored){
-						steps++;
-						explored[exploredCount++] = node;
-						expandNode(frontier, frontier_length, explored, exploredCount, node);
-						sortFrontier(frontier, frontier_length);
+						search_nodes++;
+						explored.push_back(node);
+						expandNode(frontier, node);
+						//sortFrontier(frontier);
 					}
 				}
 			}
 			else
 				return goalState;// failure
-			if (frontier_length > 50) frontier_length = 40;
+			
+			for (unsigned i = 0; i < frontier.size(); i++){
+				if (frontier[i].actCount > MAX_STACKS - 5){
+					frontier.erase(frontier.begin() + i);
+				}
+			}
 
-			cout << "||||||||||||||||||||||||||||" << endl;
-			for (int i = frontier_length-1; i >=0; i--)
-				cout <<i<<" - MDscore: "<< frontier[i].MDscore << endl;
-			cout << "||||||||||||||||||||||||||||" << endl;
-		//	cout << "node.actCount " << node.actCount << endl;
-			cout << "Steps       : " << steps << endl;
-			cout << "Frontier_len: " << frontier_length << endl;
+			system("cls");
+			cout << "Explored len: " << explored.size() << endl;
+			cout << "Frontier len: " << frontier.size() << endl;
+			cout << "Search Nodes: " << search_nodes << endl;
 			node.printCurrentState();
+			cout << "||||||||||||||||||||||||||||" << endl;
+			for (unsigned i = 0; i < frontier.size() && i < 10; i++)
+				cout <<i<<" - MDscore: "<< frontier[i].MDscore << endl;
+			//cout << "||||||||||||||||||||||||||||" << endl;
 
-		//	printGoalState();
-			//string i;
-			//if (steps % MAX_SEARCH_DEPTH == 0)
-			//cin >> i;
+			//if (node.MDscore <= 5){
+			//	Sleep(1500);
+			//	//string i;
+			//	//cin >> i;
+			//}
 		}
 	}
 
@@ -486,9 +506,8 @@ public:
 	}
 
 private:
+	vector<puzzle>frontier;
 	puzzle startState, goalState;
-	puzzle frontier[MAX_STACKS];
-	int frontier_length;
 	int width;
 	int height;
 	int spaces;
