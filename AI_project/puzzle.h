@@ -8,7 +8,7 @@
 
 #define MAX_HEIGHT_AND_WIDTH 10
 #define MAX_SEARCH_NODE 250
-#define MAX_STACKS 80
+#define MAX_STACKS 100
 using namespace std;
 
 class puzzle{
@@ -469,7 +469,7 @@ public:
 				return goalState;// failure
 			
 			for (unsigned i = 0; i < frontier.size(); i++){
-				if (frontier[i].actCount > MAX_STACKS - 5){
+				if (frontier[i].actCount > MAX_STACKS - 10){
 					frontier.erase(frontier.begin() + i);
 				}
 			}
