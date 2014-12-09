@@ -404,27 +404,47 @@ public:
 	}
 
 	void InsertNode(vector<puzzle> &f, puzzle &t){
-		for (unsigned i = 0; i < f.size(); i++){
+		//if (f.size() == 0)
+		//	f.push_back(t);
+		//else{
+		//	unsigned lowerBound = 0, upperBound = f.size() - 1, middle, curIn = 0;
+		//	for (int i = 0; i < f.size() / 2;i++){
+		//		middle = (lowerBound + upperBound) / 2;
+		//		if (t.Score < f[middle].Score){
+		//			upperBound = middle;
+		//			if (f[lowerBound].Score)
+		//		}
+		//		else if (t.Score > f[middle].Score){
+		//			lowerBound = middle+1;
+		//			if (lowerBound >= upperBound){
+		//				curIn = lowerBound;
+		//				break;
+		//			}
+		//		}
+		//		else
+		//		{
+		//			for (int i = middle; i >= 0; i--){
+		//				if (t.Score < f[i].Score){
+		//					curIn = i + 1;
+		//					break;
+		//				}
+		//			}
+		//			break;
+		//		}				
+		//	}
+		//	//		else
+		//	f.insert(f.begin() + curIn, t);
+		//}
+		unsigned i;
+		for (i = 0; i < f.size(); i++){
 			if (t.Score <= f[i].Score){
 				f.insert(f.begin() + i,t);
 				break;
 			}
 		}
-		f.push_back(t);
+		if (i == f.size())
+			f.push_back(t);
 	}
-
-//	void sortFrontier(vector<puzzle> &frontier){
-	//	puzzle tmp;
-	//	for (int i = frontier.size() - 1; i > 0; i--)	{
-	//		for (int j = 0; j <= i - 1; j++){
-	//			if (frontier[j].MDscore > frontier[j + 1].MDscore){
-	//				tmp = frontier[j];
-	//				frontier[j] = frontier[j + 1];
-	//				frontier[j + 1] = tmp;
-	//			}
-	//		}
-	//	}
-	//}
 
 	void removeFirstFrontier(puzzle frontier[], int &frontier_length){
 		frontier_length--;
@@ -456,13 +476,13 @@ public:
 
 		while (true) {
 			if (frontier.size() != 0) {
-				if (search_nodes >= MAX_SEARCH_NODE){
-					search_nodes = 0;
-					frontier.clear();
-					frontier.push_back(startState);
-					explored.erase(explored.begin() + tmp++);
-				//	explored.erase(explored.begin() + tmp, explored.end());
-				}
+				//if (search_nodes >= MAX_SEARCH_NODE){
+				//	search_nodes = 0;
+				//	frontier.clear();
+				//	frontier.push_back(startState);
+				//	explored.erase(explored.begin() + tmp++);
+				////	explored.erase(explored.begin() + tmp, explored.end());
+				//}
 				node = frontier[0];
 				frontier.erase(frontier.begin());
 
@@ -487,11 +507,11 @@ public:
 			else
 				return goalState;// failure
 			
-			for (unsigned i = 0; i < frontier.size(); i++){
-				if (frontier[i].actCount > MAX_STACKS - 10){
-					frontier.erase(frontier.begin() + i);
-				}
-			}
+			//for (unsigned i = 0; i < frontier.size(); i++){
+			//	if (frontier[i].actCount > MAX_STACKS - 10){
+			//		frontier.erase(frontier.begin() + i);
+			//	}
+			//}
 
 			system("cls");
 			cout << "Explored len: " << explored.size() << endl;
@@ -499,18 +519,17 @@ public:
 			cout << "Search Nodes: " << search_nodes << endl;
 			node.printCurrentState();
 			cout << "||||||||||||||||||||||||||||" << endl;
-			for (unsigned i = 0; i < frontier.size() && i < 10; i++)
+			for (unsigned i = 0; i < frontier.size() && i < 13; i++)
 				cout <<i<<" - Sccore: "<< frontier[i].Score << endl;
 			//cout << "||||||||||||||||||||||||||||" << endl;
 
 			//if (node.MDscore <= 5){
-			//	Sleep(1500);
-			//	//string i;
-			//	//cin >> i;
+			//////	Sleep(1500);
+			//	string i;
+			//	cin >> i;
 			//}
 		}
 	}
-
 
 	void printGoalState()
 	{
