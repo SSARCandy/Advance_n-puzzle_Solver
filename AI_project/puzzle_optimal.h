@@ -55,19 +55,19 @@ public:
 		goalState.tile = goal;
 	}
 
-	void testing()
-	{
-		currentState = frontier.top();
-		frontier.pop();
-		expandNode(currentState);
-		State tmp = frontier.top();
-		
+	//void testing()
+	//{
+	//	currentState = frontier.top();
+	//	frontier.pop();
+	//	expandNode(currentState);
+	//	State tmp = frontier.top();
+	//	
 
-		cout << "g(n)" << tmp.g << endl;
-		cout << "h(n)" << tmp.h << endl;
-		cout << heuristicEvaluation(tmp) << endl;
-		tmp.tile.print();
-	}
+	//	cout << "g(n)" << tmp.g << endl;
+	//	cout << "h(n)" << tmp.h << endl;
+	//	cout << heuristicEvaluation(tmp) << endl;
+	//	tmp.tile.print();
+	//}
 
 	void initPuzzle(string ss){ currentState.tile = Tiles(ss); }
 
