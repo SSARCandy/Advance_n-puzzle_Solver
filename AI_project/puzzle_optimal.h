@@ -73,7 +73,7 @@ public:
 
 	void setGoalState(string goal){ goalState.tile = Tiles(goal); }
 
-	bool goalTest(){ currentState.h == 0; }
+	bool goalTest(){ return currentState.h == 0; }
 
 	//currentState.tile[x][y]'s min distance to goal state
 	int manhattenDistance(State node, int y, int x)
@@ -118,12 +118,13 @@ public:
 				heuristicEvaluation(child);
 				child.g++;
 
-				cout << "Direction: " << dir << " h(n): " << child.h << " g(n): "<<child.g << endl;
-				child.tile.print();
+				//cout << "Direction: " << dir << " h(n): " << child.h << " g(n): "<<child.g << endl;
+				//child.tile.print();
 				//add child to froniter
 				frontier.push(child);
 			}
 		}
+		cout <<endl<< "------------expand-----------" << endl;
 	}
 
 	void A_star()

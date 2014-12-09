@@ -8,10 +8,11 @@ int main(){
 	int o;*/
 	puzzle p(SS,GS);
 	
-	
+	p.A_star();
+	cout << "---------------------" << endl;
 	//cout << tes
-	//p.printCurrentState();
-	//p.printGoalState();
+	p.printCurrentState();
+	p.printGoalState();
 
 	//cout << "------------------------------------" << endl;
 	//p.testing();
