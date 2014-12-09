@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <algorithm>
 using namespace std;
 
 class Tiles
@@ -25,8 +26,7 @@ public:
 		}
 
 		height = h;
-		width = (w / h);
-		g = 0;
+		width = w / h;
 
 		stringstream streamSS(s);
 		for (int i = 0; i < height; i++){
@@ -44,7 +44,7 @@ public:
 		copy(tile);
 	}
 
-	int& at(int x, int y){ /*if (x>height || y>width) return; */return tiles.at(width*x + y); }
+	int& at(int y, int x){ /*if (x>height || y>width) return; */return tiles.at(width*y + x); }
 
 	int& at(int position){ return tiles.at(position); }
 
@@ -67,18 +67,14 @@ public:
 	}
 
 	////return the index of the target. If target doesn't exist, return -1.
-	//int find(int target)
-	//{
-	//	//use binary search
-	//	vector<int>::iterator begin = tiles.begin();
-	//	vector<int>::iterator end = tiles.end();
-
-	//	vector<int>::iterator it = lower_bound(begin, end, target);
-	//	if (it != end && !(target < *it))
-	//		return it - tiles.begin();
-	//	else
-	//		return -1;
-	//}
+	int find(const int target)
+	{
+		vector<int>::iterator it = std::find(tiles.begin(), tiles.end(), target);
+		if (it != tiles.end())
+			return it - tiles.begin();
+		else
+			return -1;
+	}
 
 	int getWidth(){ return width; }
 	int getHeight(){ return height; }

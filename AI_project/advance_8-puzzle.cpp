@@ -1,12 +1,20 @@
-#include "puzzle.h"
+#include "puzzle_optimal.h"
 #include <cstdlib>
 
 
 int main(){
 	string SS, GS;
-	cin >> SS >> GS;
-	int o;
-//	puzzle p(SS,GS);
+	cin >> SS >> GS;/*
+	int o;*/
+	puzzle p(SS,GS);
+	
+	
+	//cout << tes
+	//p.printCurrentState();
+	//p.printGoalState();
+
+	//cout << "------------------------------------" << endl;
+	//p.testing();
 //
 //	p.printCurrentState();
 //
@@ -21,5 +29,6 @@ int main(){
 //
 //	cin >> SS;
 
+	system("pause");
 	return 0;
 }

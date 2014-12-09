@@ -6,8 +6,21 @@
 struct State
 {
 	Tiles tile;
-	int g = 0;
-	int h = 0;
+	int g;
+	int h;
+
+	State()
+	{
+		g = 0;
+		h = 0;
+	}
+
+	State(const State& a)
+	{
+		tile.copy(a.tile);
+		g = a.g;
+		h = a.h;
+	}
 };
 
 struct compareState
@@ -26,11 +39,14 @@ public:
 			currentState.tile.getHeight() != goalState.tile.getHeight())
 			exit(EXIT_FAILURE);
 
-		heuristicEvaluation(currentState);
-		frontier.push(currentState);
+		
 		width = currentState.tile.getWidth();
 		height = currentState.tile.getHeight();
 		spaces = currentState.tile.getNumOfEmptySpaces();
+
+		heuristicEvaluation(currentState);/*
+		cout << " \t" << currentState.h << endl;*/
+		frontier.push(currentState);
 	}
 
 	puzzle(Tiles start, Tiles goal)
@@ -39,31 +55,38 @@ public:
 		goalState.tile = goal;
 	}
 
+	void testing()
+	{
+		currentState = frontier.top();
+		frontier.pop();
+		expandNode(currentState);
+		State tmp = frontier.top();
+		
+
+		cout << "g(n)" << tmp.g << endl;
+		cout << "h(n)" << tmp.h << endl;
+		cout << heuristicEvaluation(tmp) << endl;
+		tmp.tile.print();
+	}
+
 	void initPuzzle(string ss){ currentState.tile = Tiles(ss); }
 
 	void setGoalState(string goal){ goalState.tile = Tiles(goal); }
 
-	void copyState(State dest, State source)
-	{
-		dest.tile.copy(source.tile);
-		dest.g = source.g;
-		dest.h = source.h;
-	}
-
-	bool goalTest(){ heuristicEvaluation(currentState) == 0; }
+	bool goalTest(){ currentState.h == 0; }
 
 	//currentState.tile[x][y]'s min distance to goal state
-	int manhattenDistance(State node, int x, int y)
+	int manhattenDistance(State node, int y, int x)
 	{
-		int index = goalState.tile.find(node.tile.at(x, y));
+		int index = goalState.tile.find(node.tile.at(y, x));
 		int GoalState_w = index % width;
 		int GoalState_h = index / width;
 
-		return abs(x - GoalState_h) + abs(y - GoalState_w);
+		return abs(y - GoalState_h) + abs(x - GoalState_w);
 	}
 
 	//Heuristic evaluation using Manhatten distance 
-	int heuristicEvaluation(State state)
+	int heuristicEvaluation(State& state)
 	{
 		int score = 0;
 		for (int CurState_h = 0; CurState_h < height; CurState_h++){
@@ -77,7 +100,7 @@ public:
 		return score;
 	}
 	
-	void expandNode(State parent)
+	void expandNode(State& parent)
 	{
 		for (int counter = 0; counter < spaces; counter++)
 		{
@@ -87,14 +110,17 @@ public:
 
 			for (int dir = 0; dir < 4; dir++)
 			{
-				State child;
-				copyState(child, parent);
-
+				//Create parent's children
+				State child(parent);
 				tileMove(child, y, x, dir);
 
+				//Calculate children's g and h
 				heuristicEvaluation(child);
-				++child.g;
+				child.g++;
 
+				cout << "Direction: " << dir << " h(n): " << child.h << " g(n): "<<child.g << endl;
+				child.tile.print();
+				//add child to froniter
 				frontier.push(child);
 			}
 		}
@@ -107,6 +133,7 @@ public:
 			currentState = frontier.top();
 			frontier.pop();
 
+			currentState.tile.print();
 			expandNode(currentState);
 		}
 	}
@@ -203,31 +230,22 @@ public:
 		return -1;
 	}
 
-
-	//void copyState(int dest[][MAX_HEIGHT_AND_WIDTH], int source[][MAX_HEIGHT_AND_WIDTH]){
-	//	for (int i = 0; i < height; i++){
-	//		for (int j = 0; j < width; j++){
-	//			dest[i][j] = source[i][j];
-	//		}
-	//	}
-	//}
-
 	//return true if the action success.
 	//action: move empty space 1-up, 2-down, 3-left, 4-right 
-	bool tileMove(State state, int y, int x, int direction)
+	bool tileMove(State& state, int y, int x, int direction)
 	{
 		if (state.tile.at(y, x) != 0)
 			return false;
-
+		
 		switch (direction)
 		{
-			case 1://UP
+			case 0://UP
 				if (y > 0)
 				{
 					if (state.tile.at(y - 1, x) > 0)
 					{
 						int tmp = state.tile.at(y - 1, x);
-						state.tile.at(y - 1, x) = state.tile.at(y, x);
+						state.tile.at(y - 1, x) = 0;
 						state.tile.at(y, x) = tmp;
 						return true;
 					}
@@ -236,7 +254,7 @@ public:
 
 				break;
 
-			case 2://DOWN
+			case 1://DOWN
 			
 				if (y < height - 1)
 				{
@@ -252,7 +270,7 @@ public:
 
 				break;
 
-			case 3://LEFT
+			case 2://LEFT
 				if (x > 0){
 					if (state.tile.at(y, x - 1) > 0)
 					{
@@ -266,7 +284,7 @@ public:
 				
 				break;
 
-			case 4://RIGHT
+			case 3://RIGHT
 				if (x < width - 1)
 				{
 					if (state.tile.at(y, x + 1) > 0)
