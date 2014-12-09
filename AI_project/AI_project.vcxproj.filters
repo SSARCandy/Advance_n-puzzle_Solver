@@ -26,5 +26,8 @@
     <ClInclude Include="Tiles.h">
       <Filter>原始程式檔</Filter>
     </ClInclude>
+    <ClInclude Include="puzzle_opt.h">
+      <Filter>原始程式檔</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
