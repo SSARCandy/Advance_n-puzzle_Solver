@@ -16,6 +16,8 @@ public:
 	puzzle(){
 		width = 0;
 		height = 0;
+		Score = 0;
+		steps = 0;
 		MDscore = 999;
 		actCount = 0;
 
@@ -26,6 +28,8 @@ public:
 	puzzle(int arr[][MAX_HEIGHT_AND_WIDTH], int w, int h){
 		width = w;
 		height = h;
+		Score = 0;
+		steps = 0;
 		MDscore = 999;
 		actCount = 0;
 
@@ -38,6 +42,8 @@ public:
 		MDscore = other.MDscore;
 		width = other.width;
 		height = other.height;
+		Score = other.Score;
+		steps = other.steps;
 		actCount = other.actCount;
 
 		for (int i = 0; i < height; i++)
@@ -54,6 +60,8 @@ public:
 		MDscore = other.MDscore;
 		width = other.width;
 		height = other.height;
+		Score = other.Score;
+		steps = other.steps;
 		actCount = other.actCount;
 
 		copyState(state, other.state);
@@ -152,11 +160,22 @@ public:
 		}
 	}
 
-	int MDscore;
+	void setScore(int md, int steps){
+		MDscore = md;
+		Score = md + steps;
+	}
+
+	int getMDscore(){
+		return MDscore;
+	}
+
+	int steps;
+	int Score;
 	int state[MAX_HEIGHT_AND_WIDTH][MAX_HEIGHT_AND_WIDTH];
 	int actCount;
 	string action[MAX_STACKS];
 private:
+	int MDscore;
 	int width;
 	int height;
 };
@@ -168,8 +187,8 @@ public:
 		//frontier_length = 0;
 		initPuzzle(start);
 		setGoalState(goal);
-		startState.MDscore = ManhattenDistance(startState);
-		goalState.MDscore = ManhattenDistance(goalState);
+		startState.setScore(ManhattenDistance(startState), 0);
+		goalState.setScore(ManhattenDistance(goalState), 0);
 	}
 
 	void initPuzzle(string ss){
@@ -246,7 +265,7 @@ public:
 	}
 
 	bool isSame(puzzle a, puzzle b){
-		if (a.MDscore != b.MDscore) return false;
+		if (a.getMDscore() != b.getMDscore()) return false;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				if (a.state[i][j] != b.state[i][j])
@@ -377,7 +396,7 @@ public:
 			for (int action = 1; action <= 4; action++){
 				tmp_puzzle = node;
 				if (tmp_puzzle.swap(w, h, action)){
-					tmp_puzzle.MDscore = ManhattenDistance(tmp_puzzle);
+					tmp_puzzle.setScore(ManhattenDistance(tmp_puzzle), ++tmp_puzzle.steps);
 					InsertNode(frontier, tmp_puzzle);
 				}
 			}
@@ -386,7 +405,7 @@ public:
 
 	void InsertNode(vector<puzzle> &f, puzzle &t){
 		for (unsigned i = 0; i < f.size(); i++){
-			if (t.MDscore <= f[i].MDscore){
+			if (t.Score <= f[i].Score){
 				f.insert(f.begin() + i,t);
 				break;
 			}
@@ -481,7 +500,7 @@ public:
 			node.printCurrentState();
 			cout << "||||||||||||||||||||||||||||" << endl;
 			for (unsigned i = 0; i < frontier.size() && i < 10; i++)
-				cout <<i<<" - MDscore: "<< frontier[i].MDscore << endl;
+				cout <<i<<" - Sccore: "<< frontier[i].Score << endl;
 			//cout << "||||||||||||||||||||||||||||" << endl;
 
 			//if (node.MDscore <= 5){
