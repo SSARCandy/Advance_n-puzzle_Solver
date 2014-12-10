@@ -56,23 +56,8 @@ public:
 		return *this;
 	}	
 
-	puzzle &operator= (puzzle & other){
-		MDscore = other.MDscore;
-		width = other.width;
-		height = other.height;
-		Score = other.Score;
-		steps = other.steps;
-		actCount = other.actCount;
-
-		copyState(state, other.state);
-
-		for (int i = 0; i < other.actCount; i++)
-			action[i] = other.action[i];
-
-		return *this;
-	}
-
 	void copyState(int dest[][MAX_HEIGHT_AND_WIDTH], int source[][MAX_HEIGHT_AND_WIDTH]){
+		stringstream buffer;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				dest[i][j] = source[i][j];
@@ -397,13 +382,13 @@ public:
 				tmp_puzzle = node;
 				if (tmp_puzzle.swap(w, h, action)){
 					tmp_puzzle.setScore(ManhattenDistance(tmp_puzzle), ++tmp_puzzle.steps);
-					InsertNode(frontier, tmp_puzzle);
+					InsertFrontier(frontier, tmp_puzzle);
 				}
 			}
 		}
 	}
 
-	void InsertNode(vector<puzzle> &f, puzzle &t){
+	void InsertFrontier(vector<puzzle> &f, puzzle &t){
 		if (f.size() == 0)
 			f.push_back(t);
 		else{
@@ -412,7 +397,7 @@ public:
 				f.push_back(t);
 			}
 			else{
-				for (int i = 0; i < f.size(); i++){
+				for (unsigned i = 0; i < f.size(); i++){
 					middle = (lowerBound + upperBound) / 2;
 					if (lowerBound == upperBound){
 						curIn = lowerBound;
@@ -455,9 +440,51 @@ public:
 		//if (i == f.size())
 		//	f.push_back(t);
 	}
-
+	void InsertExplored(vector<puzzle> &f, puzzle &t){
+		if (f.size() == 0)
+			f.push_back(t);
+		else{
+			unsigned lowerBound = 0, upperBound = f.size() - 1, middle, curIn = 0;
+			if (t.getMDscore() > f[upperBound].getMDscore()){
+				f.push_back(t);
+			}
+			else{
+				for (unsigned i = 0; i < f.size(); i++){
+					middle = (lowerBound + upperBound) / 2;
+					if (lowerBound == upperBound){
+						curIn = lowerBound;
+						break;
+					}
+					if (t.getMDscore() < f[middle].getMDscore()){
+						upperBound = middle;
+					}
+					else if (t.getMDscore() > f[middle].getMDscore()){
+						lowerBound = middle + 1;
+						if (lowerBound >= upperBound){
+							curIn = upperBound;
+							break;
+						}
+					}
+					else if (t.getMDscore() == f[middle].getMDscore()){
+						for (int i = middle; i >= 0; i--){
+							if (t.getMDscore() > f[i].getMDscore()){
+								curIn = i + 1;
+								break;
+							}
+						}
+						break;
+					}
+					else{
+						cout << "ERROR" << endl;
+						break;
+					}
+				}
+				f.insert(f.begin() + curIn, t);
+			}
+		}
+	}
 	bool search(vector<puzzle> explored, puzzle node){
-		for (int i = 0; i < explored.size() && explored[i].Score <= node.Score; i++){
+		for (unsigned i = 0; i < explored.size() && explored[i].getMDscore() <= node.getMDscore(); i++){
 			if (isSame(explored[i], node)){
 				return true;
 			}
@@ -497,11 +524,6 @@ public:
 		//return false;
 	}
 
-	void removeFirstFrontier(puzzle frontier[], int &frontier_length){
-		frontier_length--;
-		for (int i = 0; i < frontier_length; i++)
-			frontier[i] = frontier[i + 1];
-	}
 
 	void removeFrontier(puzzle frontier[], int &frontier_length, puzzle node){
 		int node_index = 0;
@@ -515,6 +537,12 @@ public:
 		for (int i = node_index; i < frontier_length; i++)
 			frontier[i] = frontier[i + 1];
 	}
+	void removeFirstFrontier(puzzle frontier[], int &frontier_length){
+		frontier_length--;
+		for (int i = 0; i < frontier_length; i++)
+			frontier[i] = frontier[i + 1];
+	}
+
 
 	puzzle graph_search(){
 		puzzle node;
@@ -523,7 +551,6 @@ public:
 
 		frontier.clear();
 		frontier.push_back(startState);
-
 
 		while (true) {
 			if (frontier.size() != 0) {
@@ -536,18 +563,19 @@ public:
 					return node;
 				}
 				else {
-					bool had_explored = search(explored, node);
-					//bool had_explored = false;
-					//for (unsigned i = 0; i < explored.size(); i++){
-					//	if (isSame(explored[i], node)){
-					//		had_explored = true;
-					//		break;
-					//	}
-					//}
+					//bool had_explored = search(explored, node);
+					bool had_explored = false;
+					for (unsigned i = 0; i < explored.size(); i++){
+						//isSame(explored[i], node);
+						if (isSame(explored[i], node)){
+							had_explored = true;
+							break;
+						}
+					}
 					if (!had_explored){
 						search_nodes++;
-						InsertNode(explored, node);
-						//explored.push_back(node);
+						//InsertExplored(explored, node);
+						explored.push_back(node);
 						expandNode(frontier, node);
 					}
 				}
@@ -555,12 +583,6 @@ public:
 			else
 				return goalState;// failure
 			
-			//for (unsigned i = 0; i < frontier.size(); i++){
-			//	if (frontier[i].actCount > MAX_STACKS - 10){
-			//		frontier.erase(frontier.begin() + i);
-			//	}
-			//}
-
 			//system("cls");
 			//cout << "Explored len: " << explored.size() << endl;
 			//cout << "Frontier len: " << frontier.size() << endl;
@@ -571,11 +593,8 @@ public:
 			//	cout <<i<<" - Sccore: "<< frontier[i].Score << endl;
 			//cout << "||||||||||||||||||||||||||||" << endl;
 
-			//if (node.MDscore <= 5){
-			////////	Sleep(1500);
 				//string i;
 				//cin >> i;
-			//}
 		}
 
 	}
