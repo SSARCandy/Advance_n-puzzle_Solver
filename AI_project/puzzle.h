@@ -404,46 +404,97 @@ public:
 	}
 
 	void InsertNode(vector<puzzle> &f, puzzle &t){
-		//if (f.size() == 0)
-		//	f.push_back(t);
-		//else{
-		//	unsigned lowerBound = 0, upperBound = f.size() - 1, middle, curIn = 0;
-		//	for (int i = 0; i < f.size() / 2;i++){
-		//		middle = (lowerBound + upperBound) / 2;
-		//		if (t.Score < f[middle].Score){
-		//			upperBound = middle;
-		//			if (f[lowerBound].Score)
-		//		}
-		//		else if (t.Score > f[middle].Score){
-		//			lowerBound = middle+1;
-		//			if (lowerBound >= upperBound){
-		//				curIn = lowerBound;
-		//				break;
-		//			}
-		//		}
-		//		else
-		//		{
-		//			for (int i = middle; i >= 0; i--){
-		//				if (t.Score < f[i].Score){
-		//					curIn = i + 1;
-		//					break;
-		//				}
-		//			}
-		//			break;
-		//		}				
-		//	}
-		//	//		else
-		//	f.insert(f.begin() + curIn, t);
-		//}
-		unsigned i;
-		for (i = 0; i < f.size(); i++){
-			if (t.Score <= f[i].Score){
-				f.insert(f.begin() + i,t);
-				break;
+		if (f.size() == 0)
+			f.push_back(t);
+		else{
+			unsigned lowerBound = 0, upperBound = f.size() - 1, middle, curIn = 0;
+			if (t.Score > f[upperBound].Score){
+				f.push_back(t);
+			}
+			else{
+				for (int i = 0; i < f.size(); i++){
+					middle = (lowerBound + upperBound) / 2;
+					if (lowerBound == upperBound){
+						curIn = lowerBound;
+						break;
+					}
+					if (t.Score < f[middle].Score){
+						upperBound = middle;
+					}
+					else if (t.Score > f[middle].Score){
+						lowerBound = middle + 1;
+						if (lowerBound >= upperBound){
+							curIn = upperBound;
+							break;
+						}
+					}
+					else if (t.Score == f[middle].Score){
+						for (int i = middle; i >= 0; i--){
+							if (t.Score > f[i].Score){
+								curIn = i + 1;
+								break;
+							}
+						}
+						break;
+					}
+					else{
+						cout << "ERROR" << endl;
+						break;
+					}
+				}
+				f.insert(f.begin() + curIn, t);
 			}
 		}
-		if (i == f.size())
-			f.push_back(t);
+		//unsigned i;
+		//for (i = 0; i < f.size(); i++){
+		//	if (t.Score <= f[i].Score){
+		//		f.insert(f.begin() + i,t);
+		//		break;
+		//	}
+		//}
+		//if (i == f.size())
+		//	f.push_back(t);
+	}
+
+	bool search(vector<puzzle> explored, puzzle node){
+		for (int i = 0; i < explored.size() && explored[i].Score <= node.Score; i++){
+			if (isSame(explored[i], node)){
+				return true;
+			}
+		}
+		return false;
+		//unsigned lowerBound = 0, upperBound = explored.size() - 1, middle, curIn = 0;
+		//for (int i = 0; i < explored.size(); i++){
+		//	middle = (lowerBound + upperBound) / 2;
+		//	if (lowerBound == upperBound){
+		//		if (isSame(explored[middle], node))
+		//			return true;
+		//	}
+		//	if (node.Score < explored[middle].Score){
+		//		upperBound = middle;
+		//	}
+		//	else if (node.Score > explored[middle].Score){
+		//		lowerBound = middle + 1;
+		//		if (lowerBound > upperBound){
+		//			return false;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		for (int i = middle; i >= 0 && explored[i].Score == node.Score; i--){
+		//			if (isSame(explored[i], node)){
+		//				return true;
+		//			}
+		//		}
+		//		for (int i = middle; i < upperBound && explored[i].Score == node.Score; i++){
+		//			if (isSame(explored[i], node)){
+		//				return true;
+		//			}
+		//		}
+		//		break;
+		//	}
+		//}
+		//return false;
 	}
 
 	void removeFirstFrontier(puzzle frontier[], int &frontier_length){
@@ -476,31 +527,28 @@ public:
 
 		while (true) {
 			if (frontier.size() != 0) {
-				//if (search_nodes >= MAX_SEARCH_NODE){
-				//	search_nodes = 0;
-				//	frontier.clear();
-				//	frontier.push_back(startState);
-				//	explored.erase(explored.begin() + tmp++);
-				////	explored.erase(explored.begin() + tmp, explored.end());
-				//}
 				node = frontier[0];
 				frontier.erase(frontier.begin());
 
-				if (goalTest(node))
+				if (goalTest(node)){
+					cout << "Explored len: " << explored.size() << endl;
+					cout << "Frontier len: " << frontier.size() << endl;
 					return node;
+				}
 				else {
-					bool had_explored = false;
-					for (unsigned i = 0; i < explored.size(); i++){
-						if (isSame(explored[i], node)){
-							had_explored = true;
-							break;
-						}
-					}
+					bool had_explored = search(explored, node);
+					//bool had_explored = false;
+					//for (unsigned i = 0; i < explored.size(); i++){
+					//	if (isSame(explored[i], node)){
+					//		had_explored = true;
+					//		break;
+					//	}
+					//}
 					if (!had_explored){
 						search_nodes++;
-						explored.push_back(node);
+						InsertNode(explored, node);
+						//explored.push_back(node);
 						expandNode(frontier, node);
-						//sortFrontier(frontier);
 					}
 				}
 			}
@@ -513,22 +561,23 @@ public:
 			//	}
 			//}
 
-			system("cls");
-			cout << "Explored len: " << explored.size() << endl;
-			cout << "Frontier len: " << frontier.size() << endl;
-			cout << "Search Nodes: " << search_nodes << endl;
-			node.printCurrentState();
-			cout << "||||||||||||||||||||||||||||" << endl;
-			for (unsigned i = 0; i < frontier.size() && i < 13; i++)
-				cout <<i<<" - Sccore: "<< frontier[i].Score << endl;
+			//system("cls");
+			//cout << "Explored len: " << explored.size() << endl;
+			//cout << "Frontier len: " << frontier.size() << endl;
+			//cout << "Search Nodes: " << search_nodes << endl;
+			//node.printCurrentState();
+			//cout << "||||||||||||||||||||||||||||" << endl;
+			//for (unsigned i = 0; i < frontier.size() && i<15; i++)
+			//	cout <<i<<" - Sccore: "<< frontier[i].Score << endl;
 			//cout << "||||||||||||||||||||||||||||" << endl;
 
 			//if (node.MDscore <= 5){
-			//////	Sleep(1500);
-			//	string i;
-			//	cin >> i;
+			////////	Sleep(1500);
+				//string i;
+				//cin >> i;
 			//}
 		}
+
 	}
 
 	void printGoalState()
