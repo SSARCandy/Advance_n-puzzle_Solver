@@ -558,8 +558,8 @@ public:
 				frontier.erase(frontier.begin());
 
 				if (goalTest(node)){
-					cout << "Explored len: " << explored.size() << endl;
-					cout << "Frontier len: " << frontier.size() << endl;
+					//cout << "Explored len: " << explored.size() << endl;
+					//cout << "Frontier len: " << frontier.size() << endl;
 					return node;
 				}
 				else {

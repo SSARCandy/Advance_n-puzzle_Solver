@@ -9,26 +9,27 @@ int main(){
 	string SS, GS;
 	puzzle ans;
 
-	cin >> SS >> GS;
-	puzzleSolver p(SS,GS);
+	getline(cin, SS);
+	getline(cin, GS);
+	puzzleSolver p(SS, GS);
 
 	start = clock();  //測速開始
 	ans = p.graph_search();
 	finish = clock(); //測速結束
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;
 
-	cout << "=============ANS==============" << endl;
+	//cout << "=============ANS==============" << endl;
 	if (ans.actCount == 0)
 		cout << "Failed" << endl;
 	else{
 		for (int i = 0; i < ans.actCount; i++)
 			cout << ans.action[i];
 	}
-	cout << "total steps: "<<ans.actCount << endl;
-	printf("%f seconds\n", duration);
-	cout << "=============ANS==============" << endl;
+	//cout << "total steps: "<<ans.actCount << endl;
+	//printf("%f seconds\n", duration);
+	//cout << "=============ANS==============" << endl;
 
-	cin >> SS;
+	//cin >> SS;
 
 	return 0;
 }
