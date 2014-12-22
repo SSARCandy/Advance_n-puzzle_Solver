@@ -4,7 +4,7 @@
 #include <string>
 #include <math.h>
 #include <vector>
- #include <Windows.h>
+// #include <Windows.h>
 
 #define MAX_HEIGHT_AND_WIDTH 10
 #define MAX_SEARCH_NODE 250
@@ -24,7 +24,6 @@ public:
 		for (int i = 0; i < MAX_STACKS; i++)
 			action[i] = "";
 	}
-
 	puzzle(int arr[][MAX_HEIGHT_AND_WIDTH], int w, int h){
 		width = w;
 		height = h;
@@ -37,7 +36,6 @@ public:
 		for (int i = 0; i < MAX_STACKS; i++)
 			action[i] = "";
 	}
-
 	puzzle &operator= (const puzzle & other){
 		MDscore = other.MDscore;
 		width = other.width;
@@ -55,7 +53,6 @@ public:
 
 		return *this;
 	}	
-
 	void copyState(int dest[][MAX_HEIGHT_AND_WIDTH], int source[][MAX_HEIGHT_AND_WIDTH]){
 		stringstream buffer;
 		for (int i = 0; i < height; i++){
@@ -64,7 +61,6 @@ public:
 			}
 		}
 	}
-
 	// return true if the swap action is success.
 	bool swap(int w, int h, int act){
 		//action: 1-up, 2-down, 3-left, 4-right
@@ -133,7 +129,6 @@ public:
 			break;
 		}
 	}
-
 	void printCurrentState(){
 		cout << "|---------Current State----------|" << " MD: " << MDscore << endl;
 		for (int i = 0; i < height; i++){
@@ -144,12 +139,10 @@ public:
 			cout << endl;
 		}
 	}
-
 	void setScore(int md, int steps){
 		MDscore = md;
 		Score = md + steps;
 	}
-
 	int getMDscore(){
 		return MDscore;
 	}
@@ -169,7 +162,6 @@ class puzzleSolver{
 public:
 	puzzleSolver(string start, string goal){
 		spaces = 0;
-		//frontier_length = 0;
 		initPuzzle(start);
 		setGoalState(goal);
 		startState.setScore(ManhattenDistance(startState), 0);
@@ -231,13 +223,11 @@ public:
 		}
 
 		stringstream stream(s);
-		//streambuf* cin_backup = std::cin.rdbuf(stream.rdbuf());
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				stream >> tmpArray[i][j];
 			}
 		}
-
 		goalState = puzzle(tmpArray, width, height);
 	}
 
@@ -249,8 +239,7 @@ public:
 			return false;
 	}
 
-	bool isSame(int a[][10], int b[][10]){
-//		if (a.getMDscore() != b.getMDscore()) return false;
+	bool isSame(int a[][MAX_HEIGHT_AND_WIDTH], int b[][MAX_HEIGHT_AND_WIDTH]){
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
 				if (a[i][j] != b[i][j])
@@ -389,160 +378,22 @@ public:
 	}
 
 	void InsertFrontier(vector<puzzle> &f, puzzle &t){
+		int i;
 		if (f.size() == 0)
 			f.push_back(t);
-		else{
-			unsigned lowerBound = 0, upperBound = f.size() - 1, middle, curIn = 0;
-			if (t.Score > f[upperBound].Score){
-				f.push_back(t);
-			}
-			else{
-				for (unsigned i = 0; i < f.size(); i++){
-					middle = (lowerBound + upperBound) / 2;
-					if (lowerBound == upperBound){
-						curIn = lowerBound;
-						break;
-					}
-					if (t.Score < f[middle].Score){
-						upperBound = middle;
-					}
-					else if (t.Score > f[middle].Score){
-						lowerBound = middle + 1;
-						if (lowerBound >= upperBound){
-							curIn = upperBound;
-							break;
-						}
-					}
-					else if (t.Score == f[middle].Score){
-						for (int i = middle; i >= 0; i--){
-							if (t.Score > f[i].Score){
-								curIn = i + 1;
-								break;
-							}
-						}
-						break;
-					}
-					else{
-						cout << "ERROR" << endl;
-						break;
-					}
+		for (i = f.size()-1; i >= 0; i--){
+			if (t.Score <= f[i].Score){
+				if (i == f.size() - 1){
+					f.push_back(t);
+					break;
 				}
-				f.insert(f.begin() + curIn, t);
+				f.insert(f.begin() + i,t);
+				break;
 			}
 		}
-		//unsigned i;
-		//for (i = 0; i < f.size(); i++){
-		//	if (t.Score <= f[i].Score){
-		//		f.insert(f.begin() + i,t);
-		//		break;
-		//	}
-		//}
-		//if (i == f.size())
-		//	f.push_back(t);
+		if (i == -1)
+			f.insert(f.begin(), t);
 	}
-	void InsertExplored(vector<puzzle> &f, puzzle &t){
-		if (f.size() == 0)
-			f.push_back(t);
-		else{
-			unsigned lowerBound = 0, upperBound = f.size() - 1, middle, curIn = 0;
-			if (t.getMDscore() > f[upperBound].getMDscore()){
-				f.push_back(t);
-			}
-			else{
-				for (unsigned i = 0; i < f.size(); i++){
-					middle = (lowerBound + upperBound) / 2;
-					if (lowerBound == upperBound){
-						curIn = lowerBound;
-						break;
-					}
-					if (t.getMDscore() < f[middle].getMDscore()){
-						upperBound = middle;
-					}
-					else if (t.getMDscore() > f[middle].getMDscore()){
-						lowerBound = middle + 1;
-						if (lowerBound >= upperBound){
-							curIn = upperBound;
-							break;
-						}
-					}
-					else if (t.getMDscore() == f[middle].getMDscore()){
-						for (int i = middle; i >= 0; i--){
-							if (t.getMDscore() > f[i].getMDscore()){
-								curIn = i + 1;
-								break;
-							}
-						}
-						break;
-					}
-					else{
-						cout << "ERROR" << endl;
-						break;
-					}
-				}
-				f.insert(f.begin() + curIn, t);
-			}
-		}
-	}
-	bool search(vector<puzzle> explored, puzzle node){
-		for (unsigned i = 0; i < explored.size() && explored[i].getMDscore() <= node.getMDscore(); i++){
-			if (isSame(explored[i].state, node.state)){
-				return true;
-			}
-		}
-		return false;
-		//unsigned lowerBound = 0, upperBound = explored.size() - 1, middle, curIn = 0;
-		//for (int i = 0; i < explored.size(); i++){
-		//	middle = (lowerBound + upperBound) / 2;
-		//	if (lowerBound == upperBound){
-		//		if (isSame(explored[middle], node))
-		//			return true;
-		//	}
-		//	if (node.Score < explored[middle].Score){
-		//		upperBound = middle;
-		//	}
-		//	else if (node.Score > explored[middle].Score){
-		//		lowerBound = middle + 1;
-		//		if (lowerBound > upperBound){
-		//			return false;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		for (int i = middle; i >= 0 && explored[i].Score == node.Score; i--){
-		//			if (isSame(explored[i], node)){
-		//				return true;
-		//			}
-		//		}
-		//		for (int i = middle; i < upperBound && explored[i].Score == node.Score; i++){
-		//			if (isSame(explored[i], node)){
-		//				return true;
-		//			}
-		//		}
-		//		break;
-		//	}
-		//}
-		//return false;
-	}
-
-
-	void removeFrontier(puzzle frontier[], int &frontier_length, puzzle node){
-		int node_index = 0;
-		for (int i = 0; i < frontier_length; i++)
-			if (isSame(frontier[i].state, node.state)){
-				frontier[i] = node;
-				node_index = i;
-			}
-
-		frontier_length--;
-		for (int i = node_index; i < frontier_length; i++)
-			frontier[i] = frontier[i + 1];
-	}
-	void removeFirstFrontier(puzzle frontier[], int &frontier_length){
-		frontier_length--;
-		for (int i = 0; i < frontier_length; i++)
-			frontier[i] = frontier[i + 1];
-	}
-
 
 	puzzle graph_search(){
 		puzzle node;
@@ -554,43 +405,22 @@ public:
 
 		while (true) {
 			if (frontier.size() != 0) {
-				node = frontier[0];
-				frontier.erase(frontier.begin());
+				node = frontier[frontier.size()-1];
+				frontier.pop_back();
 
 				if (goalTest(node)){
-					//cout << "Explored len: " << explored.size() << endl;
-					//cout << "Frontier len: " << frontier.size() << endl;
 					return node;
 				}
 				else {
-					//bool had_explored = search(explored, node);
 					bool had_explored = false;
-					//if (explored.size() == 0)
-					//	had_explored = false;
 					for (unsigned i = 0; i < explored.size(); i++){
-						//isSame(explored[i], node);
 						if (isSame(explored[i].state, node.state)){
 							had_explored = true;
 							break;
 						}
-						//if (explored[i].getMDscore() != node.getMDscore()){
-						//	had_explored = false;
-						//	break;
-						//}
-						//for (int i = 0; i < height; i++){
-						//	for (int j = 0; j < width; j++){
-						//		if (explored[i].state[i][j] != node.state[i][j])
-						//		{
-						//			had_explored = false;
-						//		}
-						//	}
-						//	if (!had_explored) break;
-						//}
-
 					}
 					if (!had_explored){
 						search_nodes++;
-						//InsertExplored(explored, node);
 						explored.push_back(node);
 						expandNode(frontier, node);
 					}
@@ -605,26 +435,15 @@ public:
 			//cout << "Search Nodes: " << search_nodes << endl;
 			//node.printCurrentState();
 			//cout << "||||||||||||||||||||||||||||" << endl;
-			//for (unsigned i = 0; i < frontier.size() && i<15; i++)
-			//	cout <<i<<" - Sccore: "<< frontier[i].Score << endl;
+			//if (frontier.size() != 0)
+			//	for (unsigned i = frontier.size() - 1; i > 0; i--)
+			//		cout << i << " - Sccore: " << frontier[i].Score << endl;
 			//cout << "||||||||||||||||||||||||||||" << endl;
 
-				//string i;
-				//cin >> i;
+			//	string i;
+			//	cin >> i;
 		}
 
-	}
-
-	void printGoalState()
-	{
-		cout << "|---------Goal State----------|" << endl;
-		for (int i = 0; i < height; i++){
-			for (int j = 0; j < width; j++){
-				cout.width(2);
-				cout << goalState.state[i][j] << ' ';
-			}
-			cout << endl;
-		}
 	}
 
 private:

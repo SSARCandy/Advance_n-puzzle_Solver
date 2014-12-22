@@ -1,22 +1,25 @@
 #include "puzzle.h"
 #include <cstdlib>
-#include <time.h>
+//#include <time.h>
 
 
 int main(){
-	clock_t start, finish;
-	double duration;
 	string SS, GS;
 	puzzle ans;
+	//clock_t start, finish;
+	//double duration;
 
 	getline(cin, SS);
 	getline(cin, GS);
+	if (SS[SS.size() - 1] != ';') SS.append(";");
+	if (GS[GS.size() - 1] != ';') GS.append(";");
+
 	puzzleSolver p(SS, GS);
 
-	start = clock();  //代硉秨﹍
+	//start = clock();  //代硉秨﹍
 	ans = p.graph_search();
-	finish = clock(); //代硉挡
-	duration = (double)(finish - start) / CLOCKS_PER_SEC;
+	//finish = clock(); //代硉挡
+	//duration = (double)(finish - start) / CLOCKS_PER_SEC;
 
 	//cout << "=============ANS==============" << endl;
 	if (ans.actCount == 0)
@@ -25,11 +28,10 @@ int main(){
 		for (int i = 0; i < ans.actCount; i++)
 			cout << ans.action[i];
 	}
-	//cout << "total steps: "<<ans.actCount << endl;
 	//printf("%f seconds\n", duration);
 	//cout << "=============ANS==============" << endl;
 
-	//cin >> SS;
+	cin >> SS;
 
 	return 0;
 }
