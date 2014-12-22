@@ -31,7 +31,7 @@ int main(){
 	//printf("%f seconds\n", duration);
 	//cout << "=============ANS==============" << endl;
 
-	cin >> SS;
+	//cin >> SS;
 
 	return 0;
 }
