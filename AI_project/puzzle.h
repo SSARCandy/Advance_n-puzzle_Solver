@@ -249,11 +249,11 @@ public:
 			return false;
 	}
 
-	bool isSame(puzzle a, puzzle b){
-		if (a.getMDscore() != b.getMDscore()) return false;
+	bool isSame(int a[][10], int b[][10]){
+//		if (a.getMDscore() != b.getMDscore()) return false;
 		for (int i = 0; i < height; i++){
 			for (int j = 0; j < width; j++){
-				if (a.state[i][j] != b.state[i][j])
+				if (a[i][j] != b[i][j])
 					return false;
 			}
 		}
@@ -485,7 +485,7 @@ public:
 	}
 	bool search(vector<puzzle> explored, puzzle node){
 		for (unsigned i = 0; i < explored.size() && explored[i].getMDscore() <= node.getMDscore(); i++){
-			if (isSame(explored[i], node)){
+			if (isSame(explored[i].state, node.state)){
 				return true;
 			}
 		}
@@ -528,7 +528,7 @@ public:
 	void removeFrontier(puzzle frontier[], int &frontier_length, puzzle node){
 		int node_index = 0;
 		for (int i = 0; i < frontier_length; i++)
-			if (isSame(frontier[i], node)){
+			if (isSame(frontier[i].state, node.state)){
 				frontier[i] = node;
 				node_index = i;
 			}
@@ -565,12 +565,28 @@ public:
 				else {
 					//bool had_explored = search(explored, node);
 					bool had_explored = false;
+					//if (explored.size() == 0)
+					//	had_explored = false;
 					for (unsigned i = 0; i < explored.size(); i++){
 						//isSame(explored[i], node);
-						if (isSame(explored[i], node)){
+						if (isSame(explored[i].state, node.state)){
 							had_explored = true;
 							break;
 						}
+						//if (explored[i].getMDscore() != node.getMDscore()){
+						//	had_explored = false;
+						//	break;
+						//}
+						//for (int i = 0; i < height; i++){
+						//	for (int j = 0; j < width; j++){
+						//		if (explored[i].state[i][j] != node.state[i][j])
+						//		{
+						//			had_explored = false;
+						//		}
+						//	}
+						//	if (!had_explored) break;
+						//}
+
 					}
 					if (!had_explored){
 						search_nodes++;
