@@ -4,17 +4,17 @@
 
 
 int main(){
-	string SS, GS;
+	string sS, gS;
 	puzzle ans;
 	//clock_t start, finish;
 	//double duration;
 
-	getline(cin, SS);
-	getline(cin, GS);
-	if (SS[SS.size() - 1] != ';') SS.append(";");
-	if (GS[GS.size() - 1] != ';') GS.append(";");
+	getline(cin, sS);
+	getline(cin, gS);
+	if (sS[sS.size() - 1] != ';') sS.append(";");
+	if (gS[gS.size() - 1] != ';') gS.append(";");
 
-	puzzleSolver p(SS, GS);
+	puzzleSolver p(sS, gS);
 
 	//start = clock();  //´ú³t¶}©l
 	ans = p.graph_search();
@@ -29,9 +29,9 @@ int main(){
 			cout << ans.action[i];
 	}
 	//printf("%f seconds\n", duration);
-	//cout << "=============ANS==============" << endl;
+	////cout << "=============ANS==============" << endl;
 
-	//cin >> SS;
+	//cin >> sS;
 
 	return 0;
 }
