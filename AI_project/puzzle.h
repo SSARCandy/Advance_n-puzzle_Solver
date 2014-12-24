@@ -3,11 +3,10 @@
 #include <cstdlib>
 #include <string>
 #include <math.h>
-#include <vector>
+#include <list>
 // #include <Windows.h>
 
 #define MAX_HEIGHT_AND_WIDTH 10
-#define MAX_SEARCH_NODE 250
 #define MAX_STACKS 100
 using namespace std;
 
@@ -233,7 +232,7 @@ public:
 
 	bool goalTest(puzzle p)
 	{
-		if (ManhattenDistance(p) == 0)
+		if (p.getMDscore() == 0)
 			return true;
 		else
 			return false;
@@ -360,7 +359,7 @@ public:
 		}
 	}
 
-	void expandNode(vector<puzzle> &frontier,  puzzle node){
+	void expandNode(list<puzzle> &frontier,  puzzle node){
 		puzzle tmp_puzzle;
 		for (int space_counter = 0; space_counter < spaces; space_counter++){
 			int w = findIndexOf(0, node, space_counter) % width;
@@ -377,27 +376,32 @@ public:
 		}
 	}
 
-	void InsertFrontier(vector<puzzle> &f, puzzle &t){
-		int i;
+	void InsertFrontier(list<puzzle> &f, puzzle &t){
+		std::list<puzzle>::iterator it;
 		if (f.size() == 0)
 			f.push_back(t);
-		for (i = f.size()-1; i >= 0; i--){
-			if (t.Score <= f[i].Score){
-				if (i == f.size() - 1){
+		for (it = f.end();; ){
+			it--;
+			if (it == f.begin()){
+				f.insert(f.begin(), t);
+				break;
+			}
+			if (t.Score <= (*it).Score){
+				std::list<puzzle>::iterator tmp = it;
+				if (tmp++ == f.end()){
 					f.push_back(t);
 					break;
 				}
-				f.insert(f.begin() + i,t);
+				f.insert(tmp,t);
 				break;
 			}
 		}
-		if (i == -1)
-			f.insert(f.begin(), t);
+
 	}
 
 	puzzle graph_search(){
 		puzzle node;
-		vector<puzzle> explored;
+		list<puzzle> explored;
 		int search_nodes = 0, tmp = 0;
 
 		frontier.clear();
@@ -405,7 +409,7 @@ public:
 
 		while (true) {
 			if (frontier.size() != 0) {
-				node = frontier[frontier.size()-1];
+				node = frontier.back();
 				frontier.pop_back();
 
 				if (goalTest(node)){
@@ -413,8 +417,8 @@ public:
 				}
 				else {
 					bool had_explored = false;
-					for (unsigned i = 0; i < explored.size(); i++){
-						if (isSame(explored[i].state, node.state)){
+					for (std::list<puzzle>::iterator it = explored.begin(); it != explored.end(); it++){
+						if (isSame((*it).state, node.state)){
 							had_explored = true;
 							break;
 						}
@@ -428,16 +432,19 @@ public:
 			}
 			else
 				return goalState;// failure
-			
+			//
 			//system("cls");
 			//cout << "Explored len: " << explored.size() << endl;
 			//cout << "Frontier len: " << frontier.size() << endl;
 			//cout << "Search Nodes: " << search_nodes << endl;
 			//node.printCurrentState();
-			//cout << "||||||||||||||||||||||||||||" << endl;
+			//cout << "||||||||||||||||||||||||||||" << endl; 
+			//int j = 0;
 			//if (frontier.size() != 0)
-			//	for (unsigned i = frontier.size() - 1; i > 0; i--)
-			//		cout << i << " - Sccore: " << frontier[i].Score << endl;
+			//	for (std::list<puzzle>::iterator i = frontier.end(); j < 12 && i != frontier.begin();  j++){
+			//		i--;
+			//		cout << j << " - Sccore: " << (*i).Score << endl;
+			//	}
 			//cout << "||||||||||||||||||||||||||||" << endl;
 
 			//	string i;
@@ -447,7 +454,7 @@ public:
 	}
 
 private:
-	vector<puzzle>frontier;
+	list<puzzle>frontier;
 	puzzle startState, goalState;
 	int width;
 	int height;

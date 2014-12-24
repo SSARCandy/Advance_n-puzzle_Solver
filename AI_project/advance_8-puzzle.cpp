@@ -1,6 +1,6 @@
 #include "puzzle.h"
 #include <cstdlib>
-//#include <time.h>
+#include <time.h>
 
 
 int main(){
@@ -11,8 +11,10 @@ int main(){
 
 	getline(cin, sS);
 	getline(cin, gS);
-	if (sS[sS.size() - 1] != ';') sS.append(";");
-	if (gS[gS.size() - 1] != ';') gS.append(";");
+	sS.append(";");
+	gS.append(";");
+	//if (sS[sS.size() - 1] != ';') sS.append(";");
+	//if (gS[gS.size() - 1] != ';') gS.append(";");
 
 	puzzleSolver p(sS, gS);
 
@@ -29,7 +31,7 @@ int main(){
 			cout << ans.action[i];
 	}
 	//printf("%f seconds\n", duration);
-	////cout << "=============ANS==============" << endl;
+	//cout << "=============ANS==============" << endl;
 
 	//cin >> sS;
 
