@@ -402,7 +402,7 @@ public:
 	puzzle graph_search(){
 		puzzle node;
 		list<puzzle> explored;
-		int search_nodes = 0, tmp = 0;
+		int search_nodes = 0;
 
 		frontier.clear();
 		frontier.push_back(startState);
