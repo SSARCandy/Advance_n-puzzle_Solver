@@ -13,9 +13,10 @@
 
 2. In input data, first row is "start state", second is "goal state".  
    The output format: First row is STEP1, second row is STEP2, until goal state。  
-   e.g. (5,2,L) is move position (5,2) to LEFT
+   e.g. `(5,2,L)` is move position `(5,2) to LEFT`
 
-3. You can use standrad input(keyboard) or using redirect cmd (./a.out < in.txt > out.txt) 
+3. You can use standrad input(keyboard) or using redirect command  
+	Something like `./a.out < in.txt > out.txt`
 
 4. Sample Input and Output:  
   
