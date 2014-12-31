@@ -1,6 +1,5 @@
-#Advance_8-puzzle_Solver
-#(有障礙的變形n-puzzle)
-============================================
+Advance_n-puzzle_Solver (有障礙的變形n-puzzle)
+=====
 
 1. Using a sequence string to represent the puzzle state  
 
