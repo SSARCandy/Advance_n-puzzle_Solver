@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.0)
+
+project( Advance-N-Puzzle-Solver )
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+add_executable( Advance-N-Puzzle-Solver
+"${PROJECT_SOURCE_DIR}/src/advance_8-puzzle.cpp" 
+"${PROJECT_SOURCE_DIR}/include/puzzle.h" 
+)

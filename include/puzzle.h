@@ -172,7 +172,7 @@ public:
 		string s = ss;
 		int w = 0, h = 0;
 
-		/*--------³B²zstart State data & ¬ö¿ı¼e°ª-----------*/
+		/*--------è™•ç†start State data & ç´€éŒ„å¯¬é«˜-----------*/
 		while (s.find(';') != string::npos){
 			h++;
 			s.replace(s.find(';'), 1, ",");
@@ -206,7 +206,7 @@ public:
 		string s = goal;
 		int w = 0, h = 0;
 
-		/*--------³B²zgoal State data-------------*/
+		/*--------è™•ç†goal State data-------------*/
 		while (s.find(';') != string::npos){
 			h++;
 			s.replace(s.find(';'), 1, ",");
