@@ -1,4 +1,4 @@
-#include "puzzle.h"
+#include "../include/puzzle.h"
 #include <cstdlib>
 #include <time.h>
 
@@ -20,9 +20,9 @@ int main(){
 
 		puzzleSolver p(sS, gS);
 
-		//start = clock();  //´ú³t¶}©l
+		//start = clock();  //æ¸¬é€Ÿé–‹å§‹
 		ans = p.graph_search();
-		//finish = clock(); //´ú³tµ²§ô
+		//finish = clock(); //æ¸¬é€ŸçµæŸ
 		//duration = (double)(finish - start) / CLOCKS_PER_SEC;
 
 		//cout << "=============ANS==============" << endl;
