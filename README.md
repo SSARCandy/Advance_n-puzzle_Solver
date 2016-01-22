@@ -1,5 +1,32 @@
 #Advance_n-puzzle_Solver 
-### -- 有障礙的變形n-puzzle
+
+
+### Introduction 
+[N-puzzle](https://en.wikipedia.org/wiki/15_puzzle) (also called Gem Puzzle, Boss Puzzle, Game of Fifteen, Mystic Square and many others) is a sliding puzzle that consists of a frame of numbered square tiles in random order with one tile missing. The puzzle also exists in other sizes, particularly the smaller 8-puzzle. If the size is 3×3 tiles, the puzzle is called the 8-puzzle or 9-puzzle, and if 4×4 tiles, the puzzle is called the 15-puzzle or 16-puzzle named, respectively, for the number of tiles and the number of spaces. The object of the puzzle is to place the tiles in order (see diagram) by making sliding moves that use the empty space.
+
+In this project, we can solved n-puzzle with **obstacles**(represent as `-1`), or with more than 1 **space**(represent as `0`)  
+The algorithm is based on **A* algorithm**, alone with **Manhatten distance** as the score.
+
+
+
+### Run the code
+
+- Use terminal with [**CMake**](https://cmake.org/) (3.0+) 
+
+	```bash
+	~$ cmake CMakeLists.txt
+	~$ make 
+	~$ ./Telescope
+	```
+- Use **XCode** or **Visual Studio**
+  - cmake-gui is easier to configure with these IDEs
+- Build yourself with g++
+
+	```bash
+	~$ g++ -o puzzle src/advance_8-puzzle.cpp include/puzzle.h
+	~$ ./puzzle < test/in12.txt > out.txt
+	```
+
 
 ---
 
