@@ -16,7 +16,7 @@ The algorithm is based on **A* algorithm**, alone with **Manhatten distance** as
 	```bash
 	~$ cmake CMakeLists.txt
 	~$ make 
-	~$ ./Telescope
+	~$ ./puzzle
 	```
 - Use **XCode** or **Visual Studio**
   - cmake-gui is easier to configure with these IDEs
