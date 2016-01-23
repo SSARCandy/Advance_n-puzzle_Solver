@@ -30,6 +30,8 @@ The algorithm is based on **A* algorithm**, alone with **Manhatten distance** as
 
 ---
 
+### How To Use
+
 1. Using a sequence string to represent the puzzle state  
 
 ###
